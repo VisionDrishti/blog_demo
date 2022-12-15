@@ -2,5 +2,9 @@
 <% @posts.each do |post|%>
 <%= link_to post.title, post%><br>
 <% end %>
-
+<%
+=begin%>
+ <p><%= post.likes.count %> <%= (post.likes.count) == 1 ? 'Like' : 'Likes'%></p> 
+<%
+=end%>
 <%= link_to "New Post ", new_post_path %>
