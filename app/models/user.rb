@@ -5,4 +5,11 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
  has_many :posts, dependent: :destroy
  has_many :likes, dependent: :destroy
+ has_many :comments, dependent: :destroy
+ has_many :notifications, as: :recipient, dependent: :destroy
+
+ def set_default_role
+  self.role ||= :user
+end
+  
 end

@@ -2,19 +2,24 @@ class PostsController < ApplicationController
   # before_action :set_post, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[show index]
   def index
-    @posts = current_user.posts.all
+    @posts = Post.all.includes(:user,:rich_text_body)
   end
 
   def show
     @post = Post.find(params[:id])
+
+    mark_notifications_as_read
   end
+
+  
 
   def new 
     @post = current_user.posts.new
   end 
 
   def create
-    @post = current_user.posts.new(post_params)
+    @post = Post.new(post_params)
+    @post.user = current_user
 
     if @post.save
       redirect_to @post
@@ -46,5 +51,12 @@ class PostsController < ApplicationController
 
   def post_params 
     params.require(:post).permit(:title, :body,  :user_id, :current_user, pics:[])
+  end 
+
+  def mark_notifications_as_read
+    if current_user
+      notifications_to_mark_as_read = @post.notifications_as_post.where(recipient: current_user)
+      notifications_to_mark_as_read.update_all(read_at: Time.zone.now)
+    end
   end 
 end

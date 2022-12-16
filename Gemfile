@@ -73,3 +73,5 @@ end
 
 
  gem "devise"
+gem "byebug"
+gem "noticed", "~> 1.6"
