@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-class User::RegistrationsController < Devise::RegistrationsController
+class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_sign_up_params, only: [:create]
   before_action :configure_account_update_params, only: [:update]
- 
 
   # GET /resource/sign_up
   # def new
@@ -21,9 +20,11 @@ class User::RegistrationsController < Devise::RegistrationsController
   # end
 
   # PUT /resource
-  # def update
-  #   super
-  # end
+  def update
+    current_user.build_address(address_params) unless current_user.address
+    current_user.address.update(address_params)
+    super
+  end
 
   # DELETE /resource
   # def destroy
@@ -42,22 +43,36 @@ class User::RegistrationsController < Devise::RegistrationsController
   # protected
 
   # If you have extra params to permit, append them to the sanitizer.
-  # def configure_sign_up_params
-  #   devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute])
-  # end
+  def configure_sign_up_params
+    devise_parameter_sanitizer.permit(:sign_up, keys: [])
+  end
 
   # If you have extra params to permit, append them to the sanitizer.
-  # def configure_account_update_params
-  #   devise_parameter_sanitizer.permit(:account_update, keys: [:attribute])
-  # end
+  def configure_account_update_params
+    devise_parameter_sanitizer.permit(:account_update, keys: [:email,
+                                                              :avatar,
+                                                              :first_name,
+                                                              :last_name,
+                                                              :password,
+                                                              :password_confirmation,
+                                                              :current_password,
+                                                              { address: %i[street city state zip country] }])
+  end
 
   # The path used after sign up.
-  # def after_sign_up_path_for(resource)
-  #   super(resource)
-  # end
+  def after_sign_up_path_for(_resource)
+    # super(resource)
+    after_signup_path('set_name')
+  end
 
   # The path used after sign up for inactive accounts.
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+
+  private
+
+  def address_params
+    params.require(:address).permit(:id, :street, :city, :state, :zip, :country)
+  end
 end
