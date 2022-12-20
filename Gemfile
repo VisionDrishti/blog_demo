@@ -77,3 +77,4 @@ gem "byebug"
 gem "noticed", "~> 1.6"
 
 gem "wicked", "~> 2.0"
+gem "nested_form"

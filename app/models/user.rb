@@ -9,7 +9,8 @@ class User < ApplicationRecord
   
   has_one_attached :avatar
 
-  has_one :address, dependent: :destroy, inverse_of: :user, autosave: true
+  has_one :address  
+  accepts_nested_attributes_for :address
 
   enum role: %i[user admin]
   after_initialize :set_default_role, if: :new_record?
@@ -46,6 +47,11 @@ class User < ApplicationRecord
     # All fields from previous steps are required if the
     # step parameter appears before or we are on the current step
     form_steps.index(step.to_s) <= form_steps.index(form_step.to_s)
+  end
+  
+  def with_address
+    build_address if address.nil?
+    self
   end
 
   private

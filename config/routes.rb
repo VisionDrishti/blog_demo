@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  
+ 
 
   get 'admin', to: 'admin#index'
   get 'admin/posts'
@@ -7,15 +7,14 @@ Rails.application.routes.draw do
   get 'admin/users'
   get 'admin/post/:id', to: 'admin#show_post', as: 'admin_post'
 resources :admin
-  
+devise_for :users
 
-  devise_for :users#, controllers: {
+  # devise_for :users ,controllers: {
   #   sessions: 'users/sessions',
   #   registrations: 'users/registrations'
   # }
-  # get '/u/:id', to: 'users#profile', as: 'user'
-   resources :after_signup
-
+  get '/u/:id', to: 'users#profile', as: 'user'
+ 
 
   resources :posts do
     resources :comments
