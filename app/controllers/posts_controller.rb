@@ -18,7 +18,7 @@ class PostsController < ApplicationController
   end 
 
   def create
-    @post = Post.new(post_params)
+    @post = current_user.posts.new(post_params)
     @post.user = current_user
 
     if @post.save
@@ -50,7 +50,7 @@ class PostsController < ApplicationController
   private
 
   def post_params 
-    params.require(:post).permit(:title, :body,  :user_id, :current_user, pics:[])
+    params.require(:post).permit(:title, :body,  :user_id, :current_user,:category_id, pics:[])
   end 
 
   def mark_notifications_as_read
